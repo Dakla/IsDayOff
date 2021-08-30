@@ -10,7 +10,9 @@ public enum LocalesType {
     UKRAINE("ua"),
     KAZAKHSTAN("kz"),
     BELARUS("by"),
-    US("us");
+    USA("us"),
+    UZBEKISTAN("uz"),
+    TURKEY("tr");
 
     private String id;
 
