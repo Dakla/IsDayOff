@@ -14,6 +14,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Основной класс библиотеки
+ * Позволяет получить тип дня по датам
+ */
 public class IsDayOff {
     private final String baseUrl = "https://isdayoff.ru/api/";
     private String userAgent = "isdayoff-java-lib/";
@@ -21,11 +25,16 @@ public class IsDayOff {
     private final IsDayOffProps properties;
     private final IsDayOffCache cache;
 
+    /**
+     * Создание экземпляра IsDayOff
+     * @return IsDayOffBuilder для указания параметров
+     * @see com.groupstp.isdayoff.IsDayOffBuilder
+     */
     public static IsDayOffBuilder Builder() {
         return new IsDayOffBuilder();
     }
 
-    public IsDayOff(IsDayOffBuilder builder) {
+    protected IsDayOff(IsDayOffBuilder builder) {
         properties = new IsDayOffProps(builder);
         cache = new IsDayOffCache(builder);
 
@@ -42,12 +51,22 @@ public class IsDayOff {
         }
     }
 
+    /**
+     * Тип сегодняшнего дня
+     * @return Тип текущего дня
+     * @see com.groupstp.isdayoff.enums.DayType
+     */
     public DayType todayType() {
         Calendar today = Calendar.getInstance();
         String response = getResponseByDate(today.get(Calendar.YEAR), today.get(Calendar.MONTH) + 1, today.get(Calendar.DAY_OF_MONTH));
         return DayType.fromId(response);
     }
 
+    /**
+     * Тип завтрашнего дня
+     * @return Тип завтрашнего дня
+     * @see com.groupstp.isdayoff.enums.DayType
+     */
     public DayType tomorrowType() {
         Calendar tomorrow = Calendar.getInstance();
         tomorrow.add(Calendar.DAY_OF_YEAR, 1);
@@ -55,6 +74,12 @@ public class IsDayOff {
         return DayType.fromId(response);
     }
 
+    /**
+     * Тип конкретного дня
+     * @param date день, который нужно проверить
+     * @return Тип этого дня
+     * @see com.groupstp.isdayoff.enums.DayType
+     */
     public DayType dayType(Date date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
@@ -62,6 +87,12 @@ public class IsDayOff {
         return DayType.fromId(response);
     }
 
+    /**
+     * Тип всех дней конкретного месяца
+     * @param date месяц, который нужно проверить
+     * @return Массив IsDayOffDateType с датой и типом для каждого дня месяца
+     * @see com.groupstp.isdayoff.IsDayOffDateType
+     */
     public List<IsDayOffDateType> daysTypeByMonth(Date date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
@@ -70,12 +101,12 @@ public class IsDayOff {
         return parseArrayResponseToList(response, calendar);
     }
 
-    private Calendar buildCalendar(int year, int month, int day) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(year, month - 1, day);
-        return calendar;
-    }
-
+    /**
+     * Тип всех дней конкретного года
+     * @param date год, для которого нужно провести проверку
+     * @return Массив IsDayOffDateType с датой и типом для каждого дня года
+     * @see com.groupstp.isdayoff.IsDayOffDateType
+     */
     public List<IsDayOffDateType> daysTypeByYear(Date date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
@@ -85,17 +116,11 @@ public class IsDayOff {
         return parseArrayResponseToList(response, calendar);
     }
 
-    private List<IsDayOffDateType> parseArrayResponseToList(String response, Calendar startDate) {
-        List<IsDayOffDateType> result = new ArrayList<>();
-        char[] days = response.toCharArray();
-        for (char day : days) {
-            DayType dayType = DayType.fromId(String.valueOf(day));
-            result.add(new IsDayOffDateType(startDate.getTime(), dayType));
-            startDate.add(Calendar.DAY_OF_MONTH, 1);
-        }
-        return result;
-    }
-
+    /**
+     * Проверка года на високосность
+     * @param date год
+     * @return true, если год високосный и false - если нет
+     */
     @Nullable
     public Boolean checkIsLeap(Date date) {
         Calendar calendar = Calendar.getInstance();
@@ -110,6 +135,13 @@ public class IsDayOff {
         return null;
     }
 
+    /**
+     * Проверка отрезка дат
+     * @param startDate  Начало отрезка
+     * @param endDate Конец
+     * @return Массив IsDayOffDateType с датой и типом для каждого дня отрезка
+     * @see com.groupstp.isdayoff.IsDayOffDateType
+     */
     public List<IsDayOffDateType> daysTypeByRage(Date startDate, Date endDate) {
         if (startDate.after(endDate)) {
             //Искл
@@ -144,6 +176,17 @@ public class IsDayOff {
         return parseArrayResponseToList(response, calendarStartDate);
     }
 
+    private List<IsDayOffDateType> parseArrayResponseToList(String response, Calendar startDate) {
+        List<IsDayOffDateType> result = new ArrayList<>();
+        char[] days = response.toCharArray();
+        for (char day : days) {
+            DayType dayType = DayType.fromId(String.valueOf(day));
+            result.add(new IsDayOffDateType(startDate.getTime(), dayType));
+            startDate.add(Calendar.DAY_OF_MONTH, 1);
+        }
+        return result;
+    }
+
     private String getResponseByRange(String startDate, String endDate) {
         StringBuilder url = new StringBuilder(baseUrl).append("getdata?");
         if (startDate == null || endDate == null) {
@@ -154,6 +197,12 @@ public class IsDayOff {
         appendProperties(url);
 
         return request(url.toString());
+    }
+
+    private Calendar buildCalendar(int year, int month, int day) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month - 1, day);
+        return calendar;
     }
 
     private String getResponseByDate(Integer year, Integer month, Integer day) {

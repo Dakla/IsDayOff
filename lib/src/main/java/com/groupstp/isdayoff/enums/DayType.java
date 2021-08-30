@@ -1,14 +1,44 @@
 package com.groupstp.isdayoff.enums;
 
+import com.groupstp.isdayoff.IsDayOffBuilder;
+
 import javax.annotation.Nullable;
 
+/**
+ * Тип дня
+ */
 public enum DayType {
+    /**
+     * Рабочий день
+     */
     WORKING_DAY("0"),
+    /**
+     * Выходной
+     */
     NOT_WORKING_DAY("1"),
+    /**
+     * Сокращенный день
+     * Появляется, если установить PreHolidaysDay
+     * @see IsDayOffBuilder#addPreHolidaysDay()
+     */
     SHORT_DAY("2"),
+    /**
+     * Рабочий день в пандемию
+     * Появляется, если установить CovidWorkingDays
+     * @see IsDayOffBuilder#addCovidWorkingDays()
+     */
     WORKING_DAY_COVID("4"),
+    /**
+     * Ошибка в дате
+     */
     ERROR_DATE("100"),
+    /**
+     * Данные не найдены
+     */
     NOT_FOUND("101"),
+    /**
+     * Ошибка сервиса
+     */
     SERVER_ERROR("199");
 
     private String id;

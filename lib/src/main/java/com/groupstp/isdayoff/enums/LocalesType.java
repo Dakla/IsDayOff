@@ -2,6 +2,9 @@ package com.groupstp.isdayoff.enums;
 
 import javax.annotation.Nullable;
 
+/**
+ * Страна, по которой проводить проверку
+ */
 public enum LocalesType {
     RUSSIA("ru"),
     UKRAINE("ua"),

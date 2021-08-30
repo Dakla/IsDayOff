@@ -5,7 +5,14 @@ import com.groupstp.isdayoff.enums.DayType;
 import java.util.Date;
 
 public class IsDayOffDateType {
+    /**
+     * Дата
+     */
     private Date date;
+    /**
+     * Тип дня
+     * @see com.groupstp.isdayoff.enums.DayType
+     */
     private DayType dayType;
 
     public IsDayOffDateType(Date date, DayType dayType) {

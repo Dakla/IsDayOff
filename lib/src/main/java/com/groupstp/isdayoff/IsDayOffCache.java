@@ -5,6 +5,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+/**
+ * Класс для работы с кэшем
+ */
 public class IsDayOffCache {
     private final Boolean cache;
     private String cacheDir;
@@ -17,6 +20,11 @@ public class IsDayOffCache {
         cacheDir = builder.getCacheDir();
     }
 
+    /**
+     * Создать файл с кэшем
+     * @param data Строка рабочих/нерабочих дней
+     * @param year Год, для которого создается кэш
+     */
     public void createCacheFile(String data, int year) {
         File cacheFile = getCacheFile(year);
         if (!cacheFile.exists()) {
@@ -42,6 +50,11 @@ public class IsDayOffCache {
         return new File(cacheDir + fileName + ".txt");
     }
 
+    /**
+     * Проверить кэш файл на наличие и актуальность
+     * @param year год для проверки
+     * @return true - кэш актуален, false - кэш не создан или требуется его обновить
+     */
     public boolean checkCacheFile(int year) {
         File cacheFile = getCacheFile(year);
         if (cacheFile.exists()) {
@@ -61,6 +74,13 @@ public class IsDayOffCache {
         }
     }
 
+    /**
+     * Получение закэшированного дня/месяца/года
+     * @param year год
+     * @param month месяц. Может быть null - тогда выгружаются данные за год
+     * @param day день. Может быть null - тогда выгружаются данные за месяц
+     * @return строку с id типа указанного дня/месяца/года
+     */
     public String getCachedDay(Integer year, Integer month, Integer day) {
         Calendar calendar = Calendar.getInstance();
         Integer tempMonth = month;
@@ -97,6 +117,12 @@ public class IsDayOffCache {
         return "";
     }
 
+    /**
+     * Получение отрезка дней из кэша
+     * @param startDate Начало отрезка
+     * @param endDate Конец
+     * @return строку с id типа отрезка дней
+     */
     public String getCachedDays(Calendar startDate, Calendar endDate) {
         File cacheFile = getCacheFile(startDate.get(Calendar.YEAR));
         if (cacheFile.exists()) {
