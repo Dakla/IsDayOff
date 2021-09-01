@@ -27,4 +27,12 @@ public class IsDayOffDateType {
     public void setDayType(DayType dayType) {
         this.dayType = dayType;
     }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public DayType getDayType() {
+        return dayType;
+    }
 }
