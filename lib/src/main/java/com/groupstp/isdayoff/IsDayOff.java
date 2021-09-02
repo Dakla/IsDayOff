@@ -1,6 +1,7 @@
 package com.groupstp.isdayoff;
 
 import com.groupstp.isdayoff.enums.DayType;
+import com.groupstp.isdayoff.enums.DirectionType;
 
 import javax.annotation.Nullable;
 import java.net.URI;
@@ -24,6 +25,14 @@ public class IsDayOff {
 
     private final IsDayOffProps properties;
     private final IsDayOffCache cache;
+
+    public static void main(String[] args) {
+        IsDayOff build = IsDayOff.Builder().build();
+        Calendar instance = Calendar.getInstance();
+        instance.set(2021, Calendar.JANUARY, 1);
+        int firstDayByType = build.getCountDaysByType(instance.getTime(), DayType.NOT_WORKING_DAY, DirectionType.FUTURE);
+        System.out.println(firstDayByType);
+    }
 
     /**
      * Создание экземпляра IsDayOff
@@ -58,7 +67,7 @@ public class IsDayOff {
      */
     public DayType todayType() {
         Calendar today = Calendar.getInstance();
-        String response = getResponseByDate(today.get(Calendar.YEAR), today.get(Calendar.MONTH) + 1, today.get(Calendar.DAY_OF_MONTH));
+        String response = getResponseByDate(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH));
         return DayType.fromId(response);
     }
 
@@ -70,7 +79,7 @@ public class IsDayOff {
     public DayType tomorrowType() {
         Calendar tomorrow = Calendar.getInstance();
         tomorrow.add(Calendar.DAY_OF_YEAR, 1);
-        String response = getResponseByDate(tomorrow.get(Calendar.YEAR), tomorrow.get(Calendar.MONTH) + 1, tomorrow.get(Calendar.DAY_OF_MONTH));
+        String response = getResponseByDate(tomorrow.get(Calendar.YEAR), tomorrow.get(Calendar.MONTH), tomorrow.get(Calendar.DAY_OF_MONTH));
         return DayType.fromId(response);
     }
 
@@ -174,6 +183,50 @@ public class IsDayOff {
         String response = getResponseByRange(startDateStr, endDateStr);
 
         return parseArrayResponseToList(response, calendarStartDate);
+    }
+
+    /**
+     * Получить первый день по типу
+     * @param date День, относительно которого начинать отсчет
+     * @param dayType Тип дня, который нужно получить
+     * @param directionType Направление(Искать в прошлом или будущем)
+     * @return Первый день, подходящий под условие
+     */
+    public Date getFirstDayByType(Date date, DayType dayType, DirectionType directionType) {
+        int direction = 0;
+        switch (directionType) {
+            case PAST -> direction = -1;
+            case FUTURE -> direction = 1;
+        }
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        while (!dayType(calendar.getTime()).equals(dayType)) {
+            calendar.add(Calendar.DAY_OF_YEAR, direction);
+        }
+        return calendar.getTime();
+    }
+
+    /**
+     * Количество дней подряд по типу
+     * @param date День, относительно которого начинать отсчет
+     * @param dayType Тип дня
+     * @param directionType Направление(Искать в прошлом или будущем)
+     * @return Кол-во дней, включая день отсчета
+     */
+    public int getCountDaysByType(Date date, DayType dayType, DirectionType directionType) {
+        int direction = 0;
+        switch (directionType) {
+            case PAST -> direction = -1;
+            case FUTURE -> direction = 1;
+        }
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        int countDaysByType = 0;
+        while (dayType(calendar.getTime()).equals(dayType)) {
+            calendar.add(Calendar.DAY_OF_YEAR, direction);
+            countDaysByType++;
+        }
+        return countDaysByType;
     }
 
     private List<IsDayOffDateType> parseArrayResponseToList(String response, Calendar startDate) {

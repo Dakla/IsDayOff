@@ -98,7 +98,7 @@ public class IsDayOffCache {
                 reader.readLine();
                 if (day != null && month != null) {
                     char[] data = reader.readLine().toCharArray();
-                    return String.valueOf(data[calendar.get(Calendar.DAY_OF_YEAR)]);
+                    return String.valueOf(data[calendar.get(Calendar.DAY_OF_YEAR) - 1]);
                 } else {
                     if (month != null) {
                         int firstDay = calendar.get(Calendar.DAY_OF_YEAR) - 1;
