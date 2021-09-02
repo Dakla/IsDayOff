@@ -195,8 +195,8 @@ public class IsDayOff {
     public Date getFirstDayByType(Date date, DayType dayType, DirectionType directionType) {
         int direction = 0;
         switch (directionType) {
-            case PAST -> direction = -1;
-            case FUTURE -> direction = 1;
+            case PAST: direction = -1; break;
+            case FUTURE: direction = 1; break;
         }
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
@@ -216,8 +216,8 @@ public class IsDayOff {
     public int getCountDaysByType(Date date, DayType dayType, DirectionType directionType) {
         int direction = 0;
         switch (directionType) {
-            case PAST -> direction = -1;
-            case FUTURE -> direction = 1;
+            case PAST: direction = -1; break;
+            case FUTURE: direction = 1; break;
         }
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
