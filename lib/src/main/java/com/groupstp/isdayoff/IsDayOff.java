@@ -151,7 +151,7 @@ public class IsDayOff {
      * @return Массив IsDayOffDateType с датой и типом для каждого дня отрезка
      * @see com.groupstp.isdayoff.IsDayOffDateType
      */
-    public List<IsDayOffDateType> daysTypeByRage(Date startDate, Date endDate) {
+    public List<IsDayOffDateType> daysTypeByRange(Date startDate, Date endDate) {
         if (startDate.after(endDate)) {
             //Искл
             return null;
@@ -246,7 +246,7 @@ public class IsDayOff {
             //Вызывать исключение
             return "199";
         }
-        url.append("?date1=").append(startDate).append("&date2=").append(endDate);
+        url.append("?date1=").append(startDate).append("&date2=").append(endDate).append("&");
         appendProperties(url);
 
         return request(url.toString());
@@ -309,7 +309,12 @@ public class IsDayOff {
                 .header("User-Agent", userAgent)
                 .build();
         try {
-            return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
+                HttpResponse response = client.send(request, HttpResponse.BodyHandlers.ofString());
+                String result = null;
+            	if(response.statusCode() == 200) 
+            		result = response.body().toString();
+            		
+            	return result;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
