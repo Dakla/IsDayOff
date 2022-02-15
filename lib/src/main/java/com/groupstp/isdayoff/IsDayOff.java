@@ -246,7 +246,7 @@ public class IsDayOff {
             //Вызывать исключение
             return "199";
         }
-        url.append("?date1=").append(startDate).append("&date2=").append(endDate).append("&");
+        url.append("date1=").append(startDate).append("&date2=").append(endDate).append("&");
         appendProperties(url);
 
         return request(url.toString());

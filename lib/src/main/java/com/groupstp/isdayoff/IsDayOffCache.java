@@ -4,12 +4,14 @@ import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import com.groupstp.isdayoff.enums.LocalesType;
 
 /**
  * Класс для работы с кэшем
  */
 public class IsDayOffCache {
     private final Boolean cache;
+    private final LocalesType locale;
     private String cacheDir;
     private final Integer cacheStorageDays;
     private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
@@ -18,6 +20,7 @@ public class IsDayOffCache {
         cache = builder.getCache();
         cacheStorageDays = builder.getCacheStorageDays();
         cacheDir = builder.getCacheDir();
+        locale = builder.getLocale();
     }
 
     /**
@@ -43,7 +46,7 @@ public class IsDayOffCache {
     }
 
     private File getCacheFile(int year) {
-        String fileName = "IsDayOffCache " + year;
+        String fileName = "IsDayOffCache " + year+"-"+locale.name();
         if (!cacheDir.endsWith("/") && !cacheDir.isEmpty()) {
             cacheDir += "/";
         }
