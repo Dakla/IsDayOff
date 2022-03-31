@@ -135,7 +135,7 @@ public class IsDayOffCache {
                 int days = endDate.get(Calendar.DAY_OF_YEAR) - startDate.get(Calendar.DAY_OF_YEAR);
                 int day = startDate.get(Calendar.DAY_OF_YEAR);
                 days += day;
-                return data.substring(day, days);
+                return data.substring(--day, --days);
             } catch (Exception e) {
                 e.printStackTrace();
             }
